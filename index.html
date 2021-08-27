@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<script src="https://aframe.io/releases/0.9.2/aframe.min.js"></script>
+<!-- <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.7.2/aframe/build/aframe-ar.js"></script> -->
+<!-- <script src="https://rawgit.com/donmccurdy/aframe-extras/v6.0.0/dist/aframe-extras.loaders.min.js"></script> -->
+<script src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js'></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+
+<script>
+    function randomSign() {
+        return Math.floor(Math.random() * 10) % 2 == 0 ? 1 : -1;
+    }
+
+    function randomSelect(vlist) {
+        return vlist[Math.floor(Math.random() * vlist.length)];
+    }
+
+    function genBars() {
+
+    }
+
+    function genBars(marker) {
+        var numBar = 100;
+        var overallScale = 200;
+        marker.innerHTML = "";
+        for (var id = 0; id < numBar; id++) {
+            var color = randomSelect(["#FFFF56", "blue", "red"]);
+            var size = Math.random() / 100 + 0.02;
+            var length = Math.random() + 0.01;
+            var depth = Math.random();
+            var speed = Math.floor(Math.random() * 1000) + 1000
+            var intercept = (Math.random() * 4) * randomSign();
+            var fromX = -2 + Math.random() * randomSign();
+            var fromY = fromX * 0.468151448 + intercept;
+            var toX = 5 + fromX + Math.random();
+            var toY = toX * 0.468151448 + intercept;
+            size *= overallScale;
+            length *= overallScale;
+            depth *= overallScale;
+            fromX *= overallScale;
+            fromY *= overallScale;
+            toX *= overallScale;
+            toY *= overallScale;
+
+            var child = '<a-box src="" id="Cube_' + id + '" class="intersectable" width="' + size + '" height=' + size + '" depth=' + length + '" position="' + fromX + ' ' + depth + ' ' + fromY + '" rotation="0 -110 -45" color="' + color + '" transparent=True ' +
+                'animation__cube_' + id + '_f0="property: position;  to: ' + fromX + ' ' + depth + ' ' + fromY + '; dur: 0; easing: linear; " ' +
+                'animation__cube_' + id + '_f1="property: position; from: ' + fromX + ' ' + depth + ' ' + fromY + '; to: ' + toX + ' ' + depth + ' ' + toY + '; dur: ' + speed + '; easing: linear; startEvents: animationcomplete__cube_' + id + '_f0, animationcomplete__cube_' + id + '_f1;"></a-box>';
+            marker.innerHTML += child;
+        }
+    }
+
+    var markerFound = 0;
+    AFRAME.registerComponent('button', {
+        init: function() {
+            var elem = document.documentElement;
+            var marker = document.querySelector("#marker");
+            marker.addEventListener("markerFound", function(evt) {
+                markerFound = 1;
+                genBars(marker);
+            });
+            marker.addEventListener("markerLost", function(evt) {
+                markerFound = 0;
+            });
+        },
+        tick: function(totalTime, deltaTime) {
+            var dTime = deltaTime / 1000;
+
+            if (markerFound == 1) {}
+        }
+    });
+</script>
+
+<body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
+    <a-scene embedded arjs='debugUIEnabled: false; sourceType: webcam' vr-mode-ui='enabled: false'>
+        <a-entity id="mouseCursor" cursor="rayOrigin: mouse" raycaster="objects: .intersectable; useWorldCoordinates: true;"></a-entity>
+
+        <a-assets>
+        </a-assets>
+
+        <a-nft id="marker" type='nft' url='./art/art' smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" button>
+            <a-box src="" id="Cube_0" class="intersectable" width="10" height="10" depth="10" position="3705 335 227" rotation="0 -110 -45" color="#FFFF56" transparent=True animation__cube_0_f0="property: position;  to: -303 0 -338; dur: 0; easing: linear; " animation__cube_0_f1="property: position; from: -303 0 -338; to: 0.3705 0 0.0227; dur: 5000; easing: linear; startEvents: animationcomplete__cube_0_f0, animationcomplete__cube_0_f1;"></a-box>
+        </a-nft>
+        <a-entity camera></a-entity>
+    </a-scene>
+</body>
+
+</html>
