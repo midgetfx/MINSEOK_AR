@@ -21,26 +21,24 @@
 
     function genBars(marker) {
         var numBar = 30;
-        var range = 0.6;
+        var range = 1;
         var slop = 0.268151448;
-        var colorSet = ["rgb(29, 28, 26)", "rgb(192, 191, 180)", "rgb(111, 59, 45)", "rgb(194, 149, 36)",
-            "rgb(109, 108, 99)", "rgb(150, 150, 140)", "rgb(155, 143, 111)", "rgb(235, 238, 237)",
-            "rgb(141, 131, 133)", "rgb(72, 144, 139)"
-        ];
-        var overallScale = 200;
+        var barSet = ["#b-1", "#bu-1", "#g-1", "#o-1", "#r-1", "#w-1"];
+        var overallScale = 100;
         marker.innerHTML = "";
         for (var id = 0; id < numBar; id++) {
-            var color = randomSelect(colorSet);
-            var size = Math.random() / 100 + 0.05;
-            var length = Math.random() + 0.3;
+            var bartype = randomSelect(barSet);
+            var size = Math.random() * 0.9 + 0.9;
+            var length = size; //Math.random();
             var depth = Math.random();
-            var speed = Math.floor(Math.random() * 1000) + 1000
-            var intercept = Math.random() * range * randomSign() - 1.5;
-            var fromX = -2 + Math.random() * randomSign();
+            var speed = Math.floor(Math.random() * 800) + 800
+            var intercept = Math.random() * range * randomSign() - 3.5;
+            var fromX = -3 + Math.random() * randomSign();
             var fromY = fromX * slop + intercept;
-            var toX = 5 + fromX + Math.random();
+            var toX = 12 + fromX + Math.random();
             var toY = toX * slop + intercept;
-            var degree = 90 - Math.atan(slop) * 180 / Math.PI;
+            // var degree = 90 - Math.atan(slop) * 180 / Math.PI; // for cube
+            var degree = 180 - Math.atan(slop) * 180 / Math.PI;
             size *= overallScale;
             length *= overallScale;
             depth *= overallScale;
@@ -49,9 +47,14 @@
             toX *= overallScale;
             toY *= overallScale;
             console.log(degree)
-            var child = '<a-box src="" id="Cube_' + id + '" class="intersectable" width="' + size + '" height=' + size + '" depth=' + length + '" position="' + fromX + ' ' + depth + ' ' + fromY + '" rotation="0 ' + degree + ' ' + degree + '" color="' + color + '" transparent=True ' +
-                'animation__cube_' + id + '_f0="property: position;  to: ' + fromX + ' ' + depth + ' ' + fromY + '; dur: 0; easing: linear; " ' +
-                'animation__cube_' + id + '_f1="property: position; from: ' + fromX + ' ' + depth + ' ' + fromY + '; to: ' + toX + ' ' + depth + ' ' + toY + '; dur: ' + speed + '; easing: linear; startEvents: animationcomplete__cube_' + id + '_f0, animationcomplete__cube_' + id + '_f1;"></a-box>';
+
+            var child = '<a-entity gltf-model="' + bartype + '" id="Bar_' + id + '" class="intersectable" scale="' + size + ' ' + size + ' ' + length + '" position="' + fromX + ' ' + depth + ' ' + fromY + '" rotation="0 ' + degree + ' 0" transparent=True ' +
+                'animation__bar_' + id + '_f0="property: position;  to: ' + fromX + ' ' + depth + ' ' + fromY + '; dur: 0; easing: linear; " ' +
+                'animation__bar_' + id + '_f1="property: position; from: ' + fromX + ' ' + depth + ' ' + fromY + '; to: ' + toX + ' ' + depth + ' ' + toY + '; dur: ' + speed + '; easing: linear; startEvents: animationcomplete__bar_' + id + '_f0, animationcomplete__bar_' + id + '_f1;"></a-entity>';
+
+            // var child = '<a-box src="" id="Cube_' + id + '" class="intersectable" width="' + size + '" height=' + size + '" depth=' + length + '" position="' + fromX + ' ' + depth + ' ' + fromY + '" rotation="0 ' + degree + ' ' + degree + '" color="' + color + '" transparent=True ' +
+            //     'animation__cube_' + id + '_f0="property: position;  to: ' + fromX + ' ' + depth + ' ' + fromY + '; dur: 0; easing: linear; " ' +
+            //     'animation__cube_' + id + '_f1="property: position; from: ' + fromX + ' ' + depth + ' ' + fromY + '; to: ' + toX + ' ' + depth + ' ' + toY + '; dur: ' + speed + '; easing: linear; startEvents: animationcomplete__cube_' + id + '_f0, animationcomplete__cube_' + id + '_f1;"></a-box>';
             marker.innerHTML += child;
         }
     }
@@ -102,15 +105,21 @@
     <div class="arjs-loader">
         <img width="10%" src="https://i.gifer.com/embedded/download/ZZ5H.gif" />
     </div>
-    <a-scene embedded arjs='debugUIEnabled: false; sourceType: webcam' vr-mode-ui='enabled: false'>
-        <a-entity id="mouseCursor" cursor="rayOrigin: mouse" raycaster="objects: .intersectable; useWorldCoordinates: true;"></a-entity>
+    <a-scene vr-mode-ui='enabled: false;' renderer="logarithmicDepthBuffer: true;" embedded arjs='trackingMethod: best; sourceType: webcam; debugUIEnabled: false;'>
 
         <a-assets>
+            <a-asset-item id="b-1" src="MINSEOK_AR/bars/b-1.glb"></a-asset-item>
+            <a-asset-item id="bu-1" src="MINSEOK_AR/bars/bu-1.glb"></a-asset-item>
+            <a-asset-item id="g-1" src="MINSEOK_AR/bars/g-1.glb"></a-asset-item>
+            <a-asset-item id="o-1" src="MINSEOK_AR/bars/o-1.glb"></a-asset-item>
+            <a-asset-item id="r-1" src="MINSEOK_AR/bars/r-1.glb"></a-asset-item>
+            <a-asset-item id="w-1" src="MINSEOK_AR/bars/w-1.glb"></a-asset-item>
         </a-assets>
 
         <a-nft id="marker" type='nft' url='MINSEOK_AR/art/art' smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" button>
-            <a-box src="" id="Cube_0" class="intersectable" width="10" height="10" depth="10" position="3705 335 227" rotation="0 -110 -45" color="#FFFF56" transparent=True animation__cube_0_f0="property: position;  to: -303 0 -338; dur: 0; easing: linear; " animation__cube_0_f1="property: position; from: -303 0 -338; to: 0.3705 0 0.0227; dur: 5000; easing: linear; startEvents: animationcomplete__cube_0_f0, animationcomplete__cube_0_f1;"></a-box>
+            <!-- <a-box src="" id="Cube_0" class="intersectable" width="10" height="10" depth="10" position="3705 335 227" rotation="0 -110 -45" color="#FFFF56" transparent=True animation__cube_0_f0="property: position;  to: -303 0 -338; dur: 0; easing: linear; " animation__cube_0_f1="property: position; from: -303 0 -338; to: 0.3705 0 0.0227; dur: 5000; easing: linear; startEvents: animationcomplete__cube_0_f0, animationcomplete__cube_0_f1;"></a-box> -->
         </a-nft>
+        <a-entity light="color: #FFF; intensity: 8" position="300 800 -300"></a-entity>
         <a-entity camera></a-entity>
     </a-scene>
 
